@@ -1,15 +1,16 @@
 import Head from "next/head";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import getConfig from "next/config";
 
-import "styles/globals.css";
+import { userService } from "../services";
 
-import { userService } from "services";
-import { Nav, Alert } from "components";
+import "../styles/tailwind.css";
 
-export default App;
+const { publicRuntimeConfig } = getConfig();
+const { ENVIRONMENT } = publicRuntimeConfig;
 
-function App({ Component, pageProps }) {
+function MyApp({ Component, pageProps }) {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [authorized, setAuthorized] = useState(false);
@@ -36,15 +37,17 @@ function App({ Component, pageProps }) {
 
   function authCheck(url) {
     // redirect to login page if accessing a private page and not logged in
-    setUser(userService.userValue);
-    const publicPaths = ["/account/login", "/account/register"];
-    const path = url.split("?")[0];
-    if (!userService.userValue && !publicPaths.includes(path)) {
-      setAuthorized(false);
-      router.push({
-        pathname: "/account/login",
-        query: { returnUrl: router.asPath },
-      });
+    if (ENVIRONMENT === "production") {
+      setUser(userService.userValue);
+      const publicPaths = ["/account/login", "/account/register"];
+      const path = url.split("?")[0];
+      if (!userService.userValue && !publicPaths.includes(path)) {
+        setAuthorized(false);
+        router.push({
+          pathname: "/account/login",
+          query: { returnUrl: router.asPath },
+        });
+      }
     } else {
       setAuthorized(true);
     }
@@ -53,19 +56,13 @@ function App({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <title>Next.js 11 - User Registration and Login Example</title>
-
-        {/* eslint-disable-next-line @next/next/no-css-tags */}
-        <link
-          href="//netdna.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-          rel="stylesheet"
-        />
+        <title>Home Swap</title>
       </Head>
-      <div className={`app-container ${user ? "bg-light" : ""}`}>
-        <Nav />
-        <Alert />
-        {authorized && <Component {...pageProps} />}
+      <div>
+        <Component {...pageProps} />
       </div>
     </>
   );
 }
+
+export default MyApp;
