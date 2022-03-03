@@ -17,6 +17,8 @@ import Cta from "./Cta";
 import Faq from "./Faq";
 import ImageHero from "./ImageHero";
 import MiniHighlight from "./MiniHighlight";
+import TextImageItem from "./TextImageItem";
+import SliderGalleryItem from "./SliderGalleryItem";
 
 import Test from "./Test";
 
@@ -40,6 +42,8 @@ const Components = {
   faq: Faq,
   imageHero: ImageHero,
   miniHighlight: MiniHighlight,
+  textImageItem: TextImageItem,
+  sliderGalleryItem: SliderGalleryItem,
 };
 
 const DynamicComponent = ({ blok }) => {
